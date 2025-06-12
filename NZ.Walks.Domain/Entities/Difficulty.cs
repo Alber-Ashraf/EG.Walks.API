@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NZ.Walks.Domain.Entities
+namespace EG.Walks.Domain.Entities
 {
-    class Difficulty
+    public class Difficulty
     {
         [Key]
         public Guid Id { get; set; }

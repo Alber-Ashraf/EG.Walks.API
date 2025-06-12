@@ -5,11 +5,11 @@ VisualStudioVersion = 17.13.35828.75 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EG.Walks", "EG.Walks\EG.Walks.csproj", "{B8719091-900F-4D2E-A653-EF26F39DA48C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NZ.Walks.Application", "NZ.Walks.Application\NZ.Walks.Application.csproj", "{F827533B-48F3-4507-B45A-BCD2B4006F0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EG.Walks.Application", "NZ.Walks.Application\EG.Walks.Application.csproj", "{F827533B-48F3-4507-B45A-BCD2B4006F0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NZ.Walks.Domain", "NZ.Walks.Domain\NZ.Walks.Domain.csproj", "{84E4E1DC-A162-42FF-9627-8ED08E8DFA09}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EG.Walks.Domain", "NZ.Walks.Domain\EG.Walks.Domain.csproj", "{84E4E1DC-A162-42FF-9627-8ED08E8DFA09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NZ.Walks.Infrastructure", "NZ.Walks.Infrastructure\NZ.Walks.Infrastructure.csproj", "{3B9AC07F-7D6D-4538-A745-E2515F738F9C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EG.Walks.Infrastructure", "NZ.Walks.Infrastructure\EG.Walks.Infrastructure.csproj", "{3B9AC07F-7D6D-4538-A745-E2515F738F9C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

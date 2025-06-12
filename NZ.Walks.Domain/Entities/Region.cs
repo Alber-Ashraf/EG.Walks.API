@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NZ.Walks.Domain.Entities
+namespace EG.Walks.Domain.Entities
 {
-    class Region
+    public class Region
     {
         [Key]
         public Guid Id { get; set; }
