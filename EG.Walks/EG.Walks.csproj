@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\NZ.Walks.Infrastructure\EG.Walks.Infrastructure.csproj" />
   </ItemGroup>
 
