@@ -23,5 +23,16 @@ namespace EG.Walks.Controllers
             }
             return Ok(reagions);
         }
+        [HttpGet]
+        [Route("{id:guid}")]
+        public IActionResult GetById([FromRoute] Guid id)
+        {
+            var region = _dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (region == null)
+            {
+                return NotFound($"Region with ID {id} not found.");
+            }
+            return Ok(region);
+        }
     }
 }
