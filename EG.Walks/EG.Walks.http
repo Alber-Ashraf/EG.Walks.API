@@ -1,0 +1,6 @@
+@EG.Walks_HostAddress = http://localhost:5018
+
+GET {{EG.Walks_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
