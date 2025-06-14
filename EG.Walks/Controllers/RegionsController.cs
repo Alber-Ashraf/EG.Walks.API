@@ -1,4 +1,6 @@
-﻿using EG.Walks.Infrastructure.Data;
+﻿using EG.Walks.Domain.DTOs;
+using EG.Walks.Domain.Entities;
+using EG.Walks.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,11 +30,6 @@ namespace EG.Walks.Controllers
                 region.RegionImageUrl
             }).ToList();
 
-            // Check if the list is null or empty
-            if (regionDTOs == null || !regionDTOs.Any())
-            {
-                return NotFound("No regions found.");
-            }
             // Return the list of regions
             return Ok(regionDTOs);
         }
@@ -53,14 +50,43 @@ namespace EG.Walks.Controllers
                 region.RegionImageUrl
             };
 
-            // Check if the region with the specified ID exists
-            if (regionDTO == null)
-            {
-                return NotFound($"Region with ID {id} not found.");
-            }
-
             // Return the region details
             return Ok(regionDTO);
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
+        {
+            // Create a new region entity from the DTO
+            var region = new Region()
+            {
+                Id = Guid.NewGuid(),
+                Code = addRegionRequestDto.Code,
+                Name = addRegionRequestDto.Name,
+                RegionImageUrl = addRegionRequestDto.RegionImageUrl
+            };
+            // Add the new region to the database
+            _dbContext.Regions.Add(region);
+            // Save changes to the database
+            _dbContext.SaveChanges();
+
+            // Map the created region to DTO
+            var regionDto = new
+            {
+                region.Id,
+                region.Code,
+                region.Name,
+                region.RegionImageUrl
+            };
+
+            // Return the created region with a 201 Created status
+            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, new
+            {
+                regionDto.Id,
+                regionDto.Code,
+                regionDto.Name,
+                regionDto.RegionImageUrl
+            });
         }
     }
 }
