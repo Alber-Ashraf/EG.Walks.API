@@ -16,23 +16,51 @@ namespace EG.Walks.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var reagions = _dbContext.Regions.ToList();
-            if (reagions == null || !reagions.Any())
+            // Fetch all regions from the database
+            var regions = _dbContext.Regions.ToList();
+
+            // Map the regions to a list of anonymous objects
+            var regionDTOs = regions.Select(region => new
+            {
+                region.Id,
+                region.Code,
+                region.Name,
+                region.RegionImageUrl
+            }).ToList();
+
+            // Check if the list is null or empty
+            if (regionDTOs == null || !regionDTOs.Any())
             {
                 return NotFound("No regions found.");
             }
-            return Ok(reagions);
+            // Return the list of regions
+            return Ok(regionDTOs);
         }
+
         [HttpGet]
         [Route("{id:guid}")]
         public IActionResult GetById([FromRoute] Guid id)
         {
+            // Fetch the region with the specified ID from the database
             var region = _dbContext.Regions.FirstOrDefault(x => x.Id == id);
-            if (region == null)
+
+            // Map the region to an anonymous object
+            var regionDTO = new
+            {
+                region.Id,
+                region.Code,
+                region.Name,
+                region.RegionImageUrl
+            };
+
+            // Check if the region with the specified ID exists
+            if (regionDTO == null)
             {
                 return NotFound($"Region with ID {id} not found.");
             }
-            return Ok(region);
+
+            // Return the region details
+            return Ok(regionDTO);
         }
     }
 }
