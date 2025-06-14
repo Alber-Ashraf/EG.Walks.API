@@ -15,6 +15,8 @@ namespace EG.Walks.Controllers
         {
             _dbContext = dbContext;
         }
+
+        // Get all regions
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -34,6 +36,7 @@ namespace EG.Walks.Controllers
             return Ok(regionDTOs);
         }
 
+        // Get a specific region by ID
         [HttpGet]
         [Route("{id:guid}")]
         public IActionResult GetById([FromRoute] Guid id)
@@ -54,6 +57,7 @@ namespace EG.Walks.Controllers
             return Ok(regionDTO);
         }
 
+        // Create a new region
         [HttpPost]
         public IActionResult Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
         {
@@ -81,6 +85,51 @@ namespace EG.Walks.Controllers
 
             // Return the created region with a 201 Created status
             return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, new
+            {
+                regionDto.Id,
+                regionDto.Code,
+                regionDto.Name,
+                regionDto.RegionImageUrl
+            });
+        }
+
+        // Update an existing region
+        [HttpPut]
+        [Route("{id:guid}")]
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+        {
+            var region = new Region()
+            {
+                Id = id,
+                Code = updateRegionRequestDto.Code,
+                Name = updateRegionRequestDto.Name,
+                RegionImageUrl = updateRegionRequestDto.RegionImageUrl
+            };
+            // Check if the region exists in the database
+            var existingRegion = _dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (existingRegion == null)
+            {
+                // If the region does not exist, return a NotFound response
+                return NotFound();
+            }
+            // Update the existing region with the new values
+            existingRegion.Code = region.Code;
+            existingRegion.Name = region.Name;
+            existingRegion.RegionImageUrl = region.RegionImageUrl;
+            // Save changes to the database
+            _dbContext.SaveChanges();
+
+            // Map the updated region to DTO
+            var regionDto = new
+            {
+                existingRegion.Id,
+                existingRegion.Code,
+                existingRegion.Name,
+                existingRegion.RegionImageUrl
+            };
+
+            // Return the updated region with a 200 OK status
+            return Ok(new
             {
                 regionDto.Id,
                 regionDto.Code,
