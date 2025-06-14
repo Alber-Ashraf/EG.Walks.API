@@ -10,13 +10,16 @@ namespace EG.Walks.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
+        // Database context for accessing regions
         private readonly EGWalksDbContext _dbContext;
+        // Constructor to inject the database context
         public RegionsController(EGWalksDbContext dbContext)
         {
             _dbContext = dbContext;
         }
 
         // Get all regions
+        //https://localhost:xxxx/api/Regions
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -37,6 +40,7 @@ namespace EG.Walks.Controllers
         }
 
         // Get a specific region by ID
+        // https://localhost:xxxx/api/Regions/{id}
         [HttpGet]
         [Route("{id:guid}")]
         public IActionResult GetById([FromRoute] Guid id)
@@ -58,6 +62,7 @@ namespace EG.Walks.Controllers
         }
 
         // Create a new region
+        // https://localhost:xxxx/api/Regions
         [HttpPost]
         public IActionResult Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
         {
@@ -94,6 +99,7 @@ namespace EG.Walks.Controllers
         }
 
         // Update an existing region
+        // https://localhost:xxxx/api/Regions/{id}
         [HttpPut]
         [Route("{id:guid}")]
         public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
@@ -136,6 +142,37 @@ namespace EG.Walks.Controllers
                 regionDto.Name,
                 regionDto.RegionImageUrl
             });
+        }
+
+        // Delete a region
+        // https://localhost:xxxx/api/Regions/{id}
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            // Check if the region exists in the database
+            var existingRegion = _dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (existingRegion == null)
+            {
+                // If the region does not exist, return a NotFound response
+                return NotFound();
+            }
+            // Remove the existing region from the database
+            _dbContext.Regions.Remove(existingRegion);
+            // Save changes to the database
+            _dbContext.SaveChanges();
+
+            // Map the deleted region to DTO
+            var regionDto = new
+            {
+                existingRegion.Id,
+                existingRegion.Code,
+                existingRegion.Name,
+                existingRegion.RegionImageUrl
+            };
+
+            // Return a NoContent response indicating successful deletion
+            return Ok(regionDto);
         }
     }
 }
