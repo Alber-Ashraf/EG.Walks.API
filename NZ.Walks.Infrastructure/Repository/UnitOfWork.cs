@@ -12,10 +12,12 @@ namespace EG.Walks.Infrastructure.Repository
     {
         private readonly EGWalksDbContext _dbContext;
         public IRegionRepository Region { get; private set; }
+        public IWalkRepository Walk { get; private set; }
         public UnitOfWork(EGWalksDbContext dbContext)
         {
             _dbContext = dbContext;
             Region = new RegionRepository(_dbContext);
+            Walk = new WalkRepository(_dbContext);
         }
         public async Task SaveAsync()
         {

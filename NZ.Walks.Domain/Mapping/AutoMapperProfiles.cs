@@ -13,12 +13,11 @@ namespace EG.Walks.Domain.Mapping
     {
         public AutoMapperProfiles()
         {
-            CreateMap<Region, RegionDto>()
-                .ReverseMap();
-            CreateMap<Region, CreateRegionRequestDto>()
-                .ReverseMap();
-            CreateMap<Region, UpdateRegionRequestDto>()
-                .ReverseMap();
+            CreateMap<Region, RegionDto>().ReverseMap();
+            CreateMap<Region, CreateRegionRequestDto>().ReverseMap();
+            CreateMap<Region, UpdateRegionRequestDto>().ReverseMap();
+            CreateMap<Walk, WalkDto>().ReverseMap();
+            CreateMap<Walk, CreateWalkRequestDto>().ReverseMap();
         }
     }
 }

@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EG.Walks.Domain.Entities;
 
 namespace EG.Walks.Infrastructure.Repository.IRepository
 {
-    public interface IUnitOfWork
+    public interface IWalkRepository
     {
-        IRegionRepository Region { get; }
-        // Method to save changes to the database
-        IWalkRepository Walk { get; }
-        Task SaveAsync();
+        // To Add a new region
+        Task<Walk> CreateWalkAsync(Walk walk);   
     }
 }
