@@ -3,6 +3,7 @@ using EG.Walks.Domain.Entities;
 using EG.Walks.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace EG.Walks.Controllers
 {
@@ -21,11 +22,17 @@ namespace EG.Walks.Controllers
         // Get all regions
         //https://localhost:xxxx/api/Regions
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             // Fetch all regions from the database
-            var regions = _dbContext.Regions.ToList();
+            var regions = await _dbContext.Regions.ToListAsync();
 
+            // Check if the regions list is empty
+            if (regions == null || !regions.Any())
+            {
+                // If the regions list is empty, return a NotFound response
+                return NotFound("No regions found.");
+            }
             // Map the regions to a list of anonymous objects
             var regionDTOs = regions.Select(region => new
             {
@@ -43,10 +50,16 @@ namespace EG.Walks.Controllers
         // https://localhost:xxxx/api/Regions/{id}
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult GetById([FromRoute] Guid id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             // Fetch the region with the specified ID from the database
-            var region = _dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var region = await _dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+            // Check if the region exists
+            if (region == null)
+            {
+                // If the region does not exist, return a NotFound response
+                return NotFound();
+            }
 
             // Map the region to an anonymous object
             var regionDTO = new
@@ -64,8 +77,15 @@ namespace EG.Walks.Controllers
         // Create a new region
         // https://localhost:xxxx/api/Regions
         [HttpPost]
-        public IActionResult Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
+        public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
         {
+            // Validate the incoming request DTO
+            if (addRegionRequestDto == null)
+            {
+                // If the request DTO is null, return a BadRequest response
+                return BadRequest("Region data is required.");
+            }
+
             // Create a new region entity from the DTO
             var region = new Region()
             {
@@ -75,9 +95,9 @@ namespace EG.Walks.Controllers
                 RegionImageUrl = addRegionRequestDto.RegionImageUrl
             };
             // Add the new region to the database
-            _dbContext.Regions.Add(region);
+            await _dbContext.Regions.AddAsync(region);
             // Save changes to the database
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             // Map the created region to DTO
             var regionDto = new
@@ -102,7 +122,7 @@ namespace EG.Walks.Controllers
         // https://localhost:xxxx/api/Regions/{id}
         [HttpPut]
         [Route("{id:guid}")]
-        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+        public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
             var region = new Region()
             {
@@ -112,7 +132,7 @@ namespace EG.Walks.Controllers
                 RegionImageUrl = updateRegionRequestDto.RegionImageUrl
             };
             // Check if the region exists in the database
-            var existingRegion = _dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var existingRegion = await _dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (existingRegion == null)
             {
                 // If the region does not exist, return a NotFound response
@@ -123,7 +143,7 @@ namespace EG.Walks.Controllers
             existingRegion.Name = region.Name;
             existingRegion.RegionImageUrl = region.RegionImageUrl;
             // Save changes to the database
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             // Map the updated region to DTO
             var regionDto = new
@@ -148,10 +168,10 @@ namespace EG.Walks.Controllers
         // https://localhost:xxxx/api/Regions/{id}
         [HttpDelete]
         [Route("{id:guid}")]
-        public IActionResult Delete([FromRoute] Guid id)
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             // Check if the region exists in the database
-            var existingRegion = _dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var existingRegion = await _dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (existingRegion == null)
             {
                 // If the region does not exist, return a NotFound response
@@ -160,7 +180,7 @@ namespace EG.Walks.Controllers
             // Remove the existing region from the database
             _dbContext.Regions.Remove(existingRegion);
             // Save changes to the database
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             // Map the deleted region to DTO
             var regionDto = new
