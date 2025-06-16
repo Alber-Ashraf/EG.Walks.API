@@ -36,9 +36,9 @@ namespace EG.Walks.Infrastructure.Repository
             return region; // Return the added region
         }
         // To Update an existing region
-        public async Task<Region?> UpdateRegionAsync(Region region)
+        public async Task<Region?> UpdateRegionAsync(Guid id, Region region)
         {
-            var existingRegion = await _dbContext.Regions.FindAsync(region.Id);
+            var existingRegion = await _dbContext.Regions.FindAsync(id);
             // Check if the region exists
             if (existingRegion == null) {
                 return null; // Return null if the region does not exist

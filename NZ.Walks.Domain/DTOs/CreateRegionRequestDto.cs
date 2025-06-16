@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EG.Walks.Domain.DTOs
 {
-    public class AddRegionRequestDto
+    public class CreateRegionRequestDto
     {
         public string Code { get; set; }
         public string Name { get; set; }

@@ -17,7 +17,7 @@ namespace EG.Walks.Infrastructure.Repository.IRepository
         // To Add a new region
         Task<Region> CreateRegionAsync(Region region);
         // To Update an existing region
-        Task<Region?> UpdateRegionAsync(Region region);
+        Task<Region?> UpdateRegionAsync(Guid id, Region region);
         // To Delete a region by ID
         Task<Region?> DeleteRegionAsync(Guid id);
     }

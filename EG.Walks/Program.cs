@@ -1,3 +1,4 @@
+using EG.Walks.Domain.Mapping;
 using EG.Walks.Infrastructure.Data;
 using EG.Walks.Infrastructure.Repository;
 using EG.Walks.Infrastructure.Repository.IRepository;
@@ -16,6 +17,7 @@ builder.Services.AddDbContext<EGWalksDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 
