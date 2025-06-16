@@ -9,6 +9,8 @@ namespace EG.Walks.Infrastructure.Repository.IRepository
 {
     public interface IWalkRepository
     {
+        // To Get All Walks
+        Task<IEnumerable<Walk>> GetAllWalksAsync();
         // To Add a new region
         Task<Walk> CreateWalkAsync(Walk walk);   
     }

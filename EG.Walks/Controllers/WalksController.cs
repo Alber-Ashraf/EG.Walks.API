@@ -19,6 +19,24 @@ namespace EG.Walks.Controllers
             _mapper = mapper;
         }
 
+        // Get all walks
+        [HttpGet]
+        public async Task<IActionResult> GetAllAsync()
+        {
+            // Use the repository to get all walks
+            var walksDomainModel = await _unitOfWork.Walk.GetAllWalksAsync();
+            // Check if the list of walks is empty
+            if (walksDomainModel == null || !walksDomainModel.Any())
+            {
+                // If the list is empty, return a NotFound response
+                return NotFound("No walks found.");
+            }
+            // Map the domain model to a list of DTOs
+            var walksDto = _mapper.Map<List<WalkDto>>(walksDomainModel);
+            // Return the list of walks
+            return Ok(walksDto);
+        }
+
         // Create a new walk
         [HttpPost]
         public async Task<IActionResult> CreateWalkAsync([FromBody] CreateWalkRequestDto createWalkRequestDto )
