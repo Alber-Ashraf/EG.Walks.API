@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EG.Walks.Domain.DTOs
+namespace EG.Walks.Domain.DTOs.Requests
 {
     public class UpdateWalkRequestDto
     {

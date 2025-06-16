@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using EG.Walks.Domain.DTOs;
+using EG.Walks.Domain.DTOs.Requests;
+using EG.Walks.Domain.DTOs.Responses;
 using EG.Walks.Domain.Entities;
 using EG.Walks.Infrastructure.Repository.IRepository;
 using Microsoft.AspNetCore.Http;

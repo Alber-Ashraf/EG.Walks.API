@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AutoMapper;
-using EG.Walks.Domain.DTOs;
+﻿using AutoMapper;
+using EG.Walks.Domain.DTOs.Requests;
+using EG.Walks.Domain.DTOs.Responses;
 using EG.Walks.Domain.Entities;
 
 namespace EG.Walks.Domain.Mapping
 {
-    public class AutoMapperProfiles :Profile
+    public class AutoMapperProfiles : Profile
     {
         public AutoMapperProfiles()
         {

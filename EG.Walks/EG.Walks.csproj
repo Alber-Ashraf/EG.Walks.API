@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NZ.Walks.Application\EG.Walks.Application.csproj" />
     <ProjectReference Include="..\NZ.Walks.Infrastructure\EG.Walks.Infrastructure.csproj" />
   </ItemGroup>
 
