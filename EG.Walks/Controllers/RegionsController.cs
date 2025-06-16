@@ -1,6 +1,7 @@
 ﻿using EG.Walks.Domain.DTOs;
 using EG.Walks.Domain.Entities;
 using EG.Walks.Infrastructure.Data;
+using EG.Walks.Infrastructure.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +13,11 @@ namespace EG.Walks.Controllers
     public class RegionsController : ControllerBase
     {
         // Database context for accessing regions
-        private readonly EGWalksDbContext _dbContext;
+        private readonly IUnitOfWork _unitOfWork;
         // Constructor to inject the database context
-        public RegionsController(EGWalksDbContext dbContext)
+        public RegionsController(IUnitOfWork unitOfWork)
         {
-            _dbContext = dbContext;
+            _unitOfWork = unitOfWork;
         }
 
         // Get all regions
@@ -25,7 +26,7 @@ namespace EG.Walks.Controllers
         public async Task<IActionResult> GetAll()
         {
             // Fetch all regions from the database
-            var regions = await _dbContext.Regions.ToListAsync();
+            var regions = await _unitOfWork.Region.GetAllRegionsAsync();
 
             // Check if the regions list is empty
             if (regions == null || !regions.Any())
@@ -34,7 +35,7 @@ namespace EG.Walks.Controllers
                 return NotFound("No regions found.");
             }
             // Map the regions to a list of anonymous objects
-            var regionDTOs = regions.Select(region => new
+            var regionDtos = regions.Select(region => new
             {
                 region.Id,
                 region.Code,
@@ -43,7 +44,7 @@ namespace EG.Walks.Controllers
             }).ToList();
 
             // Return the list of regions
-            return Ok(regionDTOs);
+            return Ok(regionDtos);
         }
 
         // Get a specific region by ID
@@ -53,7 +54,7 @@ namespace EG.Walks.Controllers
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             // Fetch the region with the specified ID from the database
-            var region = await _dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+            var region = await _unitOfWork.Region.GetRegionByIdAsync(id);
             // Check if the region exists
             if (region == null)
             {
@@ -62,7 +63,7 @@ namespace EG.Walks.Controllers
             }
 
             // Map the region to an anonymous object
-            var regionDTO = new
+            var regionDto = new
             {
                 region.Id,
                 region.Code,
@@ -71,7 +72,7 @@ namespace EG.Walks.Controllers
             };
 
             // Return the region details
-            return Ok(regionDTO);
+            return Ok(regionDto);
         }
 
         // Create a new region
@@ -79,14 +80,7 @@ namespace EG.Walks.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] AddRegionRequestDto addRegionRequestDto) 
         {
-            // Validate the incoming request DTO
-            if (addRegionRequestDto == null)
-            {
-                // If the request DTO is null, return a BadRequest response
-                return BadRequest("Region data is required.");
-            }
-
-            // Create a new region entity from the DTO
+            // Map the incoming DTO to a Region entity
             var region = new Region()
             {
                 Id = Guid.NewGuid(),
@@ -95,27 +89,21 @@ namespace EG.Walks.Controllers
                 RegionImageUrl = addRegionRequestDto.RegionImageUrl
             };
             // Add the new region to the database
-            await _dbContext.Regions.AddAsync(region);
+            region = await _unitOfWork.Region.CreateRegionAsync(region);
             // Save changes to the database
-            await _dbContext.SaveChangesAsync();
+            await _unitOfWork.SaveAsync();
 
             // Map the created region to DTO
-            var regionDto = new
+            var regionDto = new RegionDto
             {
-                region.Id,
-                region.Code,
-                region.Name,
-                region.RegionImageUrl
+                Id = region.Id,
+                Code = region.Code,
+                Name = region.Name,
+                RegionImageUrl = region.RegionImageUrl
             };
 
             // Return the created region with a 201 Created status
-            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, new
-            {
-                regionDto.Id,
-                regionDto.Code,
-                regionDto.Name,
-                regionDto.RegionImageUrl
-            });
+            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
         }
 
         // Update an existing region
@@ -124,6 +112,7 @@ namespace EG.Walks.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
+            // Map the incoming DTO to a Region entity
             var region = new Region()
             {
                 Id = id,
@@ -131,37 +120,27 @@ namespace EG.Walks.Controllers
                 Name = updateRegionRequestDto.Name,
                 RegionImageUrl = updateRegionRequestDto.RegionImageUrl
             };
-            // Check if the region exists in the database
-            var existingRegion = await _dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
-            if (existingRegion == null)
+            // Update the existing region with the new values
+            var updatedRegion = await _unitOfWork.Region.UpdateRegionAsync(region);
+            // Check if the region was found and updated
+            if (updatedRegion == null)
             {
                 // If the region does not exist, return a NotFound response
                 return NotFound();
             }
-            // Update the existing region with the new values
-            existingRegion.Code = region.Code;
-            existingRegion.Name = region.Name;
-            existingRegion.RegionImageUrl = region.RegionImageUrl;
             // Save changes to the database
-            await _dbContext.SaveChangesAsync();
+            await _unitOfWork.SaveAsync();
 
             // Map the updated region to DTO
-            var regionDto = new
+            var regionDto = new RegionDto
             {
-                existingRegion.Id,
-                existingRegion.Code,
-                existingRegion.Name,
-                existingRegion.RegionImageUrl
+                Id = updatedRegion.Id,
+                Code = updatedRegion.Code,
+                Name = updatedRegion.Name,
+                RegionImageUrl = updatedRegion.RegionImageUrl
             };
-
             // Return the updated region with a 200 OK status
-            return Ok(new
-            {
-                regionDto.Id,
-                regionDto.Code,
-                regionDto.Name,
-                regionDto.RegionImageUrl
-            });
+            return Ok(regionDto);
         }
 
         // Delete a region
@@ -170,25 +149,23 @@ namespace EG.Walks.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
-            // Check if the region exists in the database
-            var existingRegion = await _dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
-            if (existingRegion == null)
+            // Attempt to delete the region with the specified ID
+            var deletedRegion = await _unitOfWork.Region.DeleteRegionAsync(id);
+            if (deletedRegion == null)
             {
-                // If the region does not exist, return a NotFound response
                 return NotFound();
             }
-            // Remove the existing region from the database
-            _dbContext.Regions.Remove(existingRegion);
-            // Save changes to the database
-            await _dbContext.SaveChangesAsync();
 
-            // Map the deleted region to DTO
-            var regionDto = new
+            // Save changes to the database after deletion
+            await _unitOfWork.SaveAsync();
+
+            // Map the deleted region to an anonymous object
+            var regionDto = new RegionDto
             {
-                existingRegion.Id,
-                existingRegion.Code,
-                existingRegion.Name,
-                existingRegion.RegionImageUrl
+                Id = deletedRegion.Id,
+                Code = deletedRegion.Code,
+                Name = deletedRegion.Name,
+                RegionImageUrl = deletedRegion.RegionImageUrl
             };
 
             // Return a NoContent response indicating successful deletion
