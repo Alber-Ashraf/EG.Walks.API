@@ -37,6 +37,25 @@ namespace EG.Walks.Controllers
             return Ok(walksDto);
         }
 
+        // Get a specific walk by ID
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
+        {
+            // Use the repository to get the walk by ID
+            var walkDomainModel = await _unitOfWork.Walk.GetWalkByIdAsync(id);
+            // Check if the walk exists
+            if (walkDomainModel == null)
+            {
+                // If the walk does not exist, return a NotFound response
+                return NotFound();
+            }
+            // Map the domain model to a DTO for the response
+            var walkDto = _mapper.Map<WalkDto>(walkDomainModel);
+            // Return the walk
+            return Ok(walkDto);
+        }
+
         // Create a new walk
         [HttpPost]
         public async Task<IActionResult> CreateWalkAsync([FromBody] CreateWalkRequestDto createWalkRequestDto )

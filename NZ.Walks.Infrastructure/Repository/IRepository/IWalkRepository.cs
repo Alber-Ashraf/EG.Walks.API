@@ -11,6 +11,8 @@ namespace EG.Walks.Infrastructure.Repository.IRepository
     {
         // To Get All Walks
         Task<IEnumerable<Walk>> GetAllWalksAsync();
+        // To Get a specific walk by ID
+        Task<Walk?> GetWalkByIdAsync(Guid id);
         // To Add a new region
         Task<Walk> CreateWalkAsync(Walk walk);   
     }
