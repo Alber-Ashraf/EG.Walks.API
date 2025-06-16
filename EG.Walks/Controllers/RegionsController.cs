@@ -38,7 +38,7 @@ namespace EG.Walks.Controllers
                 return NotFound("No regions found.");
             }
             // Map the regions to a list of anonymous objects
-            var regionDtos = _mapper.Map<IEnumerable<RegionDto>>(regionsDomainModel);
+            var regionDtos = _mapper.Map<IEnumerable<RegionDtoResponse>>(regionsDomainModel);
 
             // Return the list of regions
             return Ok(regionDtos);
@@ -60,7 +60,7 @@ namespace EG.Walks.Controllers
             }
 
             // Map the region to an anonymous object
-            var regionDto = _mapper.Map<RegionDto>(regionDomainModel);
+            var regionDto = _mapper.Map<RegionDtoResponse>(regionDomainModel);
 
             // Return the region details
             return Ok(regionDto);
@@ -79,7 +79,7 @@ namespace EG.Walks.Controllers
             await _unitOfWork.SaveAsync();
 
             // Map the created region to DTO
-            var regionDto = _mapper.Map<RegionDto>(regionDomainModel);
+            var regionDto = _mapper.Map<RegionDtoResponse>(regionDomainModel);
 
             // Return the created region with a 201 Created status
             return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
@@ -105,7 +105,7 @@ namespace EG.Walks.Controllers
             await _unitOfWork.SaveAsync();
 
             // Map the updated region to DTO
-            var regionDto = _mapper.Map<RegionDto>(updatedRegion);
+            var regionDto = _mapper.Map<RegionDtoResponse>(updatedRegion);
             // Return the updated region with a 200 OK status
             return Ok(regionDto);
         }
@@ -127,7 +127,7 @@ namespace EG.Walks.Controllers
             await _unitOfWork.SaveAsync();
 
             // Map the deleted region to an anonymous object
-            var regionDto = _mapper.Map<RegionDto>(deletedRegion);
+            var regionDto = _mapper.Map<RegionDtoResponse>(deletedRegion);
 
             // Return the deleted region with a 200 OK status
             return Ok(regionDto);

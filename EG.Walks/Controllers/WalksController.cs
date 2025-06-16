@@ -32,7 +32,7 @@ namespace EG.Walks.Controllers
                 return NotFound("No walks found.");
             }
             // Map the domain model to a list of DTOs
-            var walksDto = _mapper.Map<List<WalkDto>>(walksDomainModel);
+            var walksDto = _mapper.Map<List<WalkDtoResponse>>(walksDomainModel);
             // Return the list of walks
             return Ok(walksDto);
         }
@@ -51,7 +51,7 @@ namespace EG.Walks.Controllers
                 return NotFound();
             }
             // Map the domain model to a DTO for the response
-            var walkDto = _mapper.Map<WalkDto>(walkDomainModel);
+            var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
             // Return the walk
             return Ok(walkDto);
         }
@@ -67,7 +67,7 @@ namespace EG.Walks.Controllers
             // Save changes to the database
             await _unitOfWork.SaveAsync();
             // Map the created walk to a DTO for the response
-            var walkDto = _mapper.Map<WalkDto>(walkDomainModel);
+            var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
             // Return the created walk
             return CreatedAtAction(nameof(GetById), new { id = walkDto.Id }, walkDto);
         }
@@ -79,9 +79,9 @@ namespace EG.Walks.Controllers
             // Map the incoming DTO to the domain model
             var walkDomainModel = _mapper.Map<Walk>(updateWalkRequestDto);
             // Use the repository to update the walk
-            var updatedWalk = await _unitOfWork.Walk.UpdateWalkAsync(id, walkDomainModel);
+            walkDomainModel = await _unitOfWork.Walk.UpdateWalkAsync(id, walkDomainModel);
             // Check if the walk was updated successfully
-            if (updatedWalk == null)
+            if (walkDomainModel == null)
             {
                 // If the walk does not exist, return a NotFound response
                 return NotFound();
@@ -89,7 +89,7 @@ namespace EG.Walks.Controllers
             // Save changes to the database
             await _unitOfWork.SaveAsync();
             // Map the updated walk to a DTO for the response
-            var walkDto = _mapper.Map<WalkDto>(updatedWalk);
+            var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
             // Return the updated walk
             return Ok(walkDto);
         }
@@ -110,7 +110,7 @@ namespace EG.Walks.Controllers
             await _unitOfWork.SaveAsync();
 
             // Map the deleted walk to a DTO for the response
-            var walkDto = _mapper.Map<WalkDto>(deletedWalk);
+            var walkDto = _mapper.Map<WalkDtoResponse>(deletedWalk);
 
             // Return the deleted walk with a 200 OK status
             return Ok(walkDto);

@@ -20,12 +20,12 @@ namespace EG.Walks.Infrastructure.Repository
         // To Get All Walks
         public async Task<IEnumerable<Walk>> GetAllWalksAsync()
         {
-            return await _dbContext.Walks.ToListAsync();
+            return await _dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
         }
         // To Get a specific walk by ID
         public async Task<Walk?> GetWalkByIdAsync(Guid id)
         {
-            return await _dbContext.Walks.FirstOrDefaultAsync(x => x.Id == id);
+            return await _dbContext.Walks.Include("Difficulty").Include("Region").FirstOrDefaultAsync(x => x.Id == id);
         }
         // To Add a new walk
         public async Task<Walk> CreateWalkAsync(Walk walk)
@@ -36,7 +36,7 @@ namespace EG.Walks.Infrastructure.Repository
         // To Update an existing walk
         public async Task<Walk?> UpdateWalkAsync(Guid id, Walk walk)
         {
-            var existingWalk = await _dbContext.Walks.FindAsync(id);
+            var existingWalk = await _dbContext.Walks.FirstOrDefaultAsync(x => x.Id == id);
             // Check if the walk exists
             if (existingWalk == null)
             {
