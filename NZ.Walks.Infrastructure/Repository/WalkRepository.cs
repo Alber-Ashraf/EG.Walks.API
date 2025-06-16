@@ -33,5 +33,24 @@ namespace EG.Walks.Infrastructure.Repository
             await _dbContext.Walks.AddAsync(walk);
             return walk; // Return the added walk
         }
+        // To Update an existing walk
+        public async Task<Walk?> UpdateWalkAsync(Guid id, Walk walk)
+        {
+            var existingWalk = await _dbContext.Walks.FindAsync(id);
+            // Check if the walk exists
+            if (existingWalk == null)
+            {
+                return null; // Return null if the walk does not exist
+            }
+            // Update the existing walk with the new values
+            existingWalk.Name = walk.Name;
+            existingWalk.Description = walk.Description;
+            existingWalk.LengthInKm = walk.LengthInKm;
+            existingWalk.WalkImageUrl = walk.WalkImageUrl;
+            existingWalk.DifficultyId = walk.DifficultyId;
+            existingWalk.RegionId = walk.RegionId;
+
+            return existingWalk;
+        }   
     }
 }

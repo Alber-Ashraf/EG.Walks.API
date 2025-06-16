@@ -71,5 +71,27 @@ namespace EG.Walks.Controllers
             // Return the created walk
             return CreatedAtAction(nameof(GetById), new { id = walkDto.Id }, walkDto);
         }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> UpdateWalkAsync([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
+        {
+            // Map the incoming DTO to the domain model
+            var walkDomainModel = _mapper.Map<Walk>(updateWalkRequestDto);
+            // Use the repository to update the walk
+            var updatedWalk = await _unitOfWork.Walk.UpdateWalkAsync(id, walkDomainModel);
+            // Check if the walk was updated successfully
+            if (updatedWalk == null)
+            {
+                // If the walk does not exist, return a NotFound response
+                return NotFound();
+            }
+            // Save changes to the database
+            await _unitOfWork.SaveAsync();
+            // Map the updated walk to a DTO for the response
+            var walkDto = _mapper.Map<WalkDto>(updatedWalk);
+            // Return the updated walk
+            return Ok(walkDto);
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace EG.Walks.Infrastructure.Repository.IRepository
         // To Get a specific walk by ID
         Task<Walk?> GetWalkByIdAsync(Guid id);
         // To Add a new region
-        Task<Walk> CreateWalkAsync(Walk walk);   
+        Task<Walk> CreateWalkAsync(Walk walk);
+        // To Update an existing walk
+        Task<Walk?> UpdateWalkAsync(Guid id, Walk walk);
     }
 }
