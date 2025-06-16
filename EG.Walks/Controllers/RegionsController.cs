@@ -129,7 +129,7 @@ namespace EG.Walks.Controllers
             // Map the deleted region to an anonymous object
             var regionDto = _mapper.Map<RegionDto>(deletedRegion);
 
-            // Return a NoContent response indicating successful deletion
+            // Return the deleted region with a 200 OK status
             return Ok(regionDto);
         }
     }

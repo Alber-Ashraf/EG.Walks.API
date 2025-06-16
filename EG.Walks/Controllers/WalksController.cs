@@ -58,7 +58,7 @@ namespace EG.Walks.Controllers
 
         // Create a new walk
         [HttpPost]
-        public async Task<IActionResult> CreateWalkAsync([FromBody] CreateWalkRequestDto createWalkRequestDto )
+        public async Task<IActionResult> CreateWalkAsync([FromBody] CreateWalkRequestDto createWalkRequestDto)
         {
             // Map the incoming DTO to the domain model
             var walkDomainModel = _mapper.Map<Walk>(createWalkRequestDto);
@@ -91,6 +91,28 @@ namespace EG.Walks.Controllers
             // Map the updated walk to a DTO for the response
             var walkDto = _mapper.Map<WalkDto>(updatedWalk);
             // Return the updated walk
+            return Ok(walkDto);
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> DeleteWalkAsync([FromRoute] Guid id)
+        {
+            // Use the repository to delete the walk
+            var deletedWalk = await _unitOfWork.Walk.DeleteWalkAsync(id);
+            // Check if the walk was deleted successfully
+            if (deletedWalk == null)
+            {
+                // If the walk does not exist, return a NotFound response
+                return NotFound();
+            }
+            // Save changes to the database
+            await _unitOfWork.SaveAsync();
+
+            // Map the deleted walk to a DTO for the response
+            var walkDto = _mapper.Map<WalkDto>(deletedWalk);
+
+            // Return the deleted walk with a 200 OK status
             return Ok(walkDto);
         }
     }

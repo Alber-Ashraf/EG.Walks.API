@@ -51,6 +51,18 @@ namespace EG.Walks.Infrastructure.Repository
             existingWalk.RegionId = walk.RegionId;
 
             return existingWalk;
-        }   
+        }
+        // To Delete a walk by ID
+        public async Task<Walk?> DeleteWalkAsync(Guid id)
+        {
+            // Find the walk by ID
+            var walk = await _dbContext.Walks.FindAsync(id);
+            // If the walk does not exist, return null
+            if (walk == null)
+                return null;
+            // Remove the walk from the DbContext
+            _dbContext.Walks.Remove(walk);
+            return walk; // Return the deleted walk
+        }
     }
 }
