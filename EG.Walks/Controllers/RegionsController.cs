@@ -72,18 +72,25 @@ namespace EG.Walks.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRegionRequestDto createRegionRequestDto) 
         {
-            // Map the incoming DTO to a Region entity
-            var regionDomainModel = _mapper.Map<Region>(createRegionRequestDto);
-            // Add the new region to the database
-            regionDomainModel = await _unitOfWork.Region.CreateRegionAsync(regionDomainModel);
-            // Save changes to the database
-            await _unitOfWork.SaveAsync();
+            // Validate the incoming DTO
+            if (ModelState.IsValid)
+            {
+                // Map the incoming DTO to a Region entity
+                var regionDomainModel = _mapper.Map<Region>(createRegionRequestDto);
+                // Add the new region to the database
+                regionDomainModel = await _unitOfWork.Region.CreateRegionAsync(regionDomainModel);
+                // Save changes to the database
+                await _unitOfWork.SaveAsync();
 
-            // Map the created region to DTO
-            var regionDto = _mapper.Map<RegionDtoResponse>(regionDomainModel);
+                // Map the created region to DTO
+                var regionDto = _mapper.Map<RegionDtoResponse>(regionDomainModel);
 
-            // Return the created region with a 201 Created status
-            return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
+                // Return the created region with a 201 Created status
+                return CreatedAtAction(nameof(GetById), new { id = regionDto.Id }, regionDto);
+            }
+
+            // If the model state is invalid, return a BadRequest response
+            return BadRequest(ModelState);
         }
 
         // Update an existing region
@@ -92,23 +99,29 @@ namespace EG.Walks.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            // Map the incoming DTO to a Region entity
-            var regionDomainModel = _mapper.Map<Region>(updateRegionRequestDto);
-            // Update the existing region with the new values
-            var updatedRegion = await _unitOfWork.Region.UpdateRegionAsync(id, regionDomainModel);
-            // Check if the region was found and updated
-            if (updatedRegion == null)
+            // Validate the incoming DTO
+            if (ModelState.IsValid)
             {
-                // If the region does not exist, return a NotFound response
-                return NotFound();
-            }
-            // Save changes to the database
-            await _unitOfWork.SaveAsync();
+                // Map the incoming DTO to a Region entity
+                var regionDomainModel = _mapper.Map<Region>(updateRegionRequestDto);
+                // Update the existing region with the new values
+                var updatedRegion = await _unitOfWork.Region.UpdateRegionAsync(id, regionDomainModel);
+                // Check if the region was found and updated
+                if (updatedRegion == null)
+                {
+                    // If the region does not exist, return a NotFound response
+                    return NotFound();
+                }
+                // Save changes to the database
+                await _unitOfWork.SaveAsync();
 
-            // Map the updated region to DTO
-            var regionDto = _mapper.Map<RegionDtoResponse>(updatedRegion);
-            // Return the updated region with a 200 OK status
-            return Ok(regionDto);
+                // Map the updated region to DTO
+                var regionDto = _mapper.Map<RegionDtoResponse>(updatedRegion);
+                // Return the updated region with a 200 OK status
+                return Ok(regionDto);
+            }
+            // If the model state is invalid, return a BadRequest response
+            return BadRequest(ModelState);
         }
 
         // Delete a region

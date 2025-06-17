@@ -61,38 +61,50 @@ namespace EG.Walks.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWalkAsync([FromBody] CreateWalkRequestDto createWalkRequestDto)
         {
-            // Map the incoming DTO to the domain model
-            var walkDomainModel = _mapper.Map<Walk>(createWalkRequestDto);
-            // Use the repository to create the walk
-            walkDomainModel = await _unitOfWork.Walk.CreateWalkAsync(walkDomainModel);
-            // Save changes to the database
-            await _unitOfWork.SaveAsync();
-            // Map the created walk to a DTO for the response
-            var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
-            // Return the created walk
-            return CreatedAtAction(nameof(GetById), new { id = walkDto.Id }, walkDto);
+            // Validate the incoming request
+            if (createWalkRequestDto == null)
+            {
+                // Map the incoming DTO to the domain model
+                var walkDomainModel = _mapper.Map<Walk>(createWalkRequestDto);
+                // Use the repository to create the walk
+                walkDomainModel = await _unitOfWork.Walk.CreateWalkAsync(walkDomainModel);
+                // Save changes to the database
+                await _unitOfWork.SaveAsync();
+                // Map the created walk to a DTO for the response
+                var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
+                // Return the created walk
+                return CreatedAtAction(nameof(GetById), new { id = walkDto.Id }, walkDto);
+            }
+            // If the model state is invalid, return a BadRequest response
+            return BadRequest(ModelState);
         }
 
         [HttpPut]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateWalkAsync([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {
-            // Map the incoming DTO to the domain model
-            var walkDomainModel = _mapper.Map<Walk>(updateWalkRequestDto);
-            // Use the repository to update the walk
-            walkDomainModel = await _unitOfWork.Walk.UpdateWalkAsync(id, walkDomainModel);
-            // Check if the walk was updated successfully
-            if (walkDomainModel == null)
+            // Validate the incoming request
+            if (ModelState.IsValid)
             {
-                // If the walk does not exist, return a NotFound response
-                return NotFound();
+                // Map the incoming DTO to the domain model
+                var walkDomainModel = _mapper.Map<Walk>(updateWalkRequestDto);
+                // Use the repository to update the walk
+                walkDomainModel = await _unitOfWork.Walk.UpdateWalkAsync(id, walkDomainModel);
+                // Check if the walk was updated successfully
+                if (walkDomainModel == null)
+                {
+                    // If the walk does not exist, return a NotFound response
+                    return NotFound();
+                }
+                // Save changes to the database
+                await _unitOfWork.SaveAsync();
+                // Map the updated walk to a DTO for the response
+                var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
+                // Return the updated walk
+                return Ok(walkDto);
             }
-            // Save changes to the database
-            await _unitOfWork.SaveAsync();
-            // Map the updated walk to a DTO for the response
-            var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
-            // Return the updated walk
-            return Ok(walkDto);
+            // If the model state is invalid, return a BadRequest response
+            return BadRequest(ModelState);
         }
 
         [HttpDelete]
