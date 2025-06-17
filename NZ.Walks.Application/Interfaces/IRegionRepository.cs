@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EG.Walks.Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
 
 namespace EG.Walks.Infrastructure.Repository.IRepository
 {

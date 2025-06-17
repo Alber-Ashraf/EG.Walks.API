@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\NZ.Walks.Application\EG.Walks.Application.csproj" />
     <ProjectReference Include="..\NZ.Walks.Domain\EG.Walks.Domain.csproj" />
   </ItemGroup>
 
