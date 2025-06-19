@@ -16,7 +16,7 @@ namespace EG.Walks.Domain.DTOs.Requests
         [MaxLength(500)]
         public string Description { get; set; }
         [Required]
-        [Range(0, 10000, ErrorMessage = "Length must be between 0 and 10,000 meters.")]
+        [Range(0, 20, ErrorMessage = "Length must be between 0 and 20 Kilo meters.")]
         public double LengthInKm { get; set; }
         public string? WalkImageUrl { get; set; }
         [Required]

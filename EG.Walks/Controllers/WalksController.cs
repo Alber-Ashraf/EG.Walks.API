@@ -22,11 +22,12 @@ namespace EG.Walks.Controllers
         }
 
         // Get all walks
+        //https://localhost:****/api/Walks?filterOn=****&filterQuery=****
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string? filterOn, [FromQuery] string? filterQuery)
         {
             // Use the repository to get all walks
-            var walksDomainModel = await _unitOfWork.Walk.GetAllWalksAsync();
+            var walksDomainModel = await _unitOfWork.Walk.GetAllWalksAsync(filterOn, filterQuery);
             // Check if the list of walks is empty
             if (walksDomainModel == null || !walksDomainModel.Any())
             {

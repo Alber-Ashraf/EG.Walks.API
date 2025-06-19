@@ -18,9 +18,24 @@ namespace EG.Walks.Infrastructure.Repository
             _dbContext = dbContext;
         }
         // To Get All Walks
-        public async Task<IEnumerable<Walk>> GetAllWalksAsync()
+        public async Task<IEnumerable<Walk>> GetAllWalksAsync(string? filerOn = null, string? filterQuery = null, string? sortBy = null, bool? isAscending = true)
         {
-            return await _dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
+            var walks = _dbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
+
+            // Apply filtering if filterOn and filterQuery are provided
+            if(string.IsNullOrWhiteSpace(filerOn) == false && string.IsNullOrWhiteSpace(filterQuery) == false)
+            {
+                if(filerOn.Equals("name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(x => x.Name.Contains(filterQuery));
+                }
+                else if (filerOn.Equals("lengthInKm", StringComparison.OrdinalIgnoreCase) && double.TryParse(filterQuery, out double length))
+                {
+                    walks = walks.Where(x => x.LengthInKm == length);
+                }
+            }
+
+            return await walks.ToListAsync();
         }
         // To Get a specific walk by ID
         public async Task<Walk?> GetWalkByIdAsync(Guid id)
