@@ -18,7 +18,7 @@ namespace EG.Walks.Infrastructure.Repository
             _dbContext = dbContext;
         }
         // To Get All Walks
-        public async Task<IEnumerable<Walk>> GetAllWalksAsync(string? filerOn = null, string? filterQuery = null, string? sortBy = null, bool? isAscending = true)
+        public async Task<IEnumerable<Walk>> GetAllWalksAsync(string? filerOn = null, string? filterQuery = null, string? sortBy = null, bool isAscending = true)
         {
             var walks = _dbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
 
@@ -32,6 +32,23 @@ namespace EG.Walks.Infrastructure.Repository
                 else if (filerOn.Equals("lengthInKm", StringComparison.OrdinalIgnoreCase) && double.TryParse(filterQuery, out double length))
                 {
                     walks = walks.Where(x => x.LengthInKm == length);
+                }
+            }
+
+            // Apply sorting if sortBy is provided
+            if (string.IsNullOrWhiteSpace(sortBy) == false)
+            {
+                if(sortBy.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = isAscending == true
+                        ? walks.OrderBy(x => x.Name)
+                        : walks.OrderByDescending(x => x.Name);
+                }
+                else if (sortBy.Equals("LengthInKm", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = isAscending == true
+                        ? walks.OrderBy(x => x.LengthInKm)
+                        : walks.OrderByDescending(x => x.LengthInKm);
                 }
             }
 

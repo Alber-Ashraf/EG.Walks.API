@@ -10,7 +10,7 @@ namespace EG.Walks.Infrastructure.Repository.IRepository
     public interface IWalkRepository
     {
         // To Get All Walks
-        Task<IEnumerable<Walk>> GetAllWalksAsync(string? filterOn = null, string? filterQuery = null);
+        Task<IEnumerable<Walk>> GetAllWalksAsync(string? filterOn = null, string? filterQuery = null, string? sortBy = null, bool isAscending = true);
         // To Get a specific walk by ID
         Task<Walk?> GetWalkByIdAsync(Guid id);
         // To Add a new region
