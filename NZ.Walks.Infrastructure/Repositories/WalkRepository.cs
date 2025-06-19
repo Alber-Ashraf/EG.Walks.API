@@ -18,7 +18,9 @@ namespace EG.Walks.Infrastructure.Repository
             _dbContext = dbContext;
         }
         // To Get All Walks
-        public async Task<IEnumerable<Walk>> GetAllWalksAsync(string? filerOn = null, string? filterQuery = null, string? sortBy = null, bool isAscending = true)
+        public async Task<IEnumerable<Walk>> GetAllWalksAsync(string? filerOn = null, string? filterQuery = null
+            , string? sortBy = null, bool isAscending = true
+            , int page = 1, int pageSize = 10)
         {
             var walks = _dbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
 
@@ -52,7 +54,10 @@ namespace EG.Walks.Infrastructure.Repository
                 }
             }
 
-            return await walks.ToListAsync();
+            // Apply pagination if page and pageSize are provided
+            int skip = (page - 1) * pageSize;
+
+            return await walks.Skip(skip).Take(pageSize).ToListAsync();
         }
         // To Get a specific walk by ID
         public async Task<Walk?> GetWalkByIdAsync(Guid id)
