@@ -1,4 +1,5 @@
 ﻿using EG.Walks.Contracts.Requests;
+using EG.Walks.Infrastructure.Repository.IRepository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +10,11 @@ namespace EG.Walks.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<IdentityUser> _userManager;
-        public AuthController(UserManager<IdentityUser> userManager)
+        public AuthController(UserManager<IdentityUser> userManager, IUnitOfWork unitOfWork)
         {
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
         }
         
