@@ -1,8 +1,8 @@
 ﻿using EG.Walks.Contracts.Requests;
 using EG.Walks.Infrastructure.Repository.IRepository;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Identity;
+using EG.Walks.Contracts.Responses;
 
 namespace EG.Walks.Controllers
 {
@@ -36,10 +36,10 @@ namespace EG.Walks.Controllers
             if (result.Succeeded)
             {
                 // If a role is provided, add the user to that role
-                if (!string.IsNullOrEmpty(registerRequestDto.Role))
+                if (registerRequestDto.Roles != null)
                 {
                     // Ensure the role exists, if not create it
-                    result = await _userManager.AddToRoleAsync(identityUser, registerRequestDto.Role);
+                    result = await _userManager.AddToRolesAsync(identityUser, registerRequestDto.Roles);
                     if (result.Succeeded)
                     {
                         return Ok("User registered successfully.");
@@ -56,14 +56,27 @@ namespace EG.Walks.Controllers
         public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
         {
             var user = await _userManager.FindByEmailAsync(loginRequestDto.userName);
-            if(user != null)
+
+            if (user != null)
             {
-                var result = await _userManager.CheckPasswordAsync(user, loginRequestDto.password);
-                if (result)
+                var checkPasswordResult = await _userManager.CheckPasswordAsync(user, loginRequestDto.password);
+                if (checkPasswordResult)
                 {
-                    // Here you would typically generate a JWT token and return it
-                    // For simplicity, we are returning a success message
-                    return Ok("Login successful.");
+                    var roles = await _userManager.GetRolesAsync(user);
+
+                    if (roles != null)
+                    {
+                        var jwtToken = _unitOfWork.Token.CreateJWTToken(user, roles.ToList());
+
+                        var response = new LoginResponseDto
+                            {
+                                JWTToken = jwtToken,
+                            };
+
+                        // Return the token in the response
+                        return Ok(response);
+                    }
+                    return Unauthorized("User has no roles assigned.");
                 }
                 else
                 {

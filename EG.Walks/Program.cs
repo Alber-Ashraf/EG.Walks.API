@@ -20,10 +20,12 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<EGWalksDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EGWalksConnectionString")));
+
 builder.Services.AddDbContext<EGWalksAuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("EGWalksAuthConnectionString")));
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 builder.Services.AddIdentityCore<IdentityUser>()
@@ -48,8 +50,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
-        ValidAudience = builder.Configuration["JWT:ValidAudience"],
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidAudience = builder.Configuration["JWT:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(builder.Configuration["JWT:key"]))
     });
