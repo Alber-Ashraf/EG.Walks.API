@@ -46,5 +46,31 @@ namespace EG.Walks.Controllers
             // If we reach here, something went wrong
             return BadRequest(result.Errors.Select(e => e.Description));
         }
+
+        // Login a user and return a token
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequestDto loginRequestDto)
+        {
+            var user = await _userManager.FindByEmailAsync(loginRequestDto.userName);
+            if(user != null)
+            {
+                var result = await _userManager.CheckPasswordAsync(user, loginRequestDto.password);
+                if (result)
+                {
+                    // Here you would typically generate a JWT token and return it
+                    // For simplicity, we are returning a success message
+                    return Ok("Login successful.");
+                }
+                else
+                {
+                    return Unauthorized("Invalid password.");
+                }
+            }
+            else
+            {
+                return NotFound("User not found.");
+            }
+        }
     }
 }
