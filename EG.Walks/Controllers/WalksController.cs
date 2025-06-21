@@ -4,6 +4,7 @@ using EG.Walks.Domain.DTOs.Responses;
 using EG.Walks.Domain.Entities;
 using EG.Walks.Filtters;
 using EG.Walks.Infrastructure.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace EG.Walks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class WalksController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -64,6 +66,7 @@ namespace EG.Walks.Controllers
         // Create a new walk
         [HttpPost]
         [ValidateModel]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateWalkRequestDto createWalkRequestDto)
         {
             // Map the incoming DTO to the domain model
@@ -81,6 +84,7 @@ namespace EG.Walks.Controllers
         [HttpPut]
         [Route("{id:guid}")]
         [ValidateModel]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {
             // Map the incoming DTO to the domain model
@@ -103,6 +107,7 @@ namespace EG.Walks.Controllers
 
         [HttpDelete]
         [Route("{id:guid}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             // Use the repository to delete the walk
