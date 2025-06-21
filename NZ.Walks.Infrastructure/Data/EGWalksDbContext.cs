@@ -5,7 +5,7 @@ namespace EG.Walks.Infrastructure.Data
 {
     public class EGWalksDbContext : DbContext
     {
-        public EGWalksDbContext(DbContextOptions dbContextOptions) : base(dbContextOptions)
+        public EGWalksDbContext(DbContextOptions<EGWalksDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
         }
