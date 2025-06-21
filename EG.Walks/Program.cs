@@ -1,8 +1,12 @@
+using System.Text;
 using EG.Walks.Domain.Mapping;
 using EG.Walks.Infrastructure.Data;
 using EG.Walks.Infrastructure.Repository;
 using EG.Walks.Infrastructure.Repository.IRepository;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +23,18 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => 
+options.TokenValidationParameters = new TokenValidationParameters {
+    ValidateIssuer = true,
+    ValidateAudience = true,
+    ValidateLifetime = true,
+    ValidateIssuerSigningKey = true,
+    ValidIssuer = builder.Configuration["JWT:ValidIssuer"],
+    ValidAudience = builder.Configuration["JWT:ValidAudience"],
+    IssuerSigningKey = new SymmetricSecurityKey(
+        Encoding.UTF8.GetBytes(builder.Configuration["JWT:key"]))
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -30,6 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();    
 app.UseAuthorization();
 
 app.MapControllers();
