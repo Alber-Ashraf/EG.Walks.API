@@ -7,7 +7,7 @@ using EG.Walks.Domain.Entities;
 
 namespace EG.Walks.Domain.DTOs.Responses
 {
-    public class WalkDtoResponse
+    public class WalkResponseDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

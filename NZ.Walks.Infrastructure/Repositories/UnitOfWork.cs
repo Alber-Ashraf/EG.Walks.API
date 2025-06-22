@@ -7,6 +7,8 @@ using EG.Walks.Application.Interfaces;
 using EG.Walks.Infrastructure.Data;
 using EG.Walks.Infrastructure.Repositories;
 using EG.Walks.Infrastructure.Repository.IRepository;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
 namespace EG.Walks.Infrastructure.Repository
@@ -15,16 +17,22 @@ namespace EG.Walks.Infrastructure.Repository
     {
         private readonly EGWalksDbContext _dbContext;
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         public IRegionRepository Region { get; private set; }
         public IWalkRepository Walk { get; private set; }
         public ITokenRepository Token { get; private set; }
+        public IImageRepository Image { get; private set; }
 
-        public UnitOfWork(EGWalksDbContext dbContext, IConfiguration configuration)
+        public UnitOfWork(EGWalksDbContext dbContext, IConfiguration configuration, IWebHostEnvironment webHostEnvironment, IHttpContextAccessor httpContextAccessor)
         {
             _dbContext = dbContext;
             _configuration = configuration;
+            _webHostEnvironment = webHostEnvironment;
+            _httpContextAccessor = httpContextAccessor;
             Region = new RegionRepository(_dbContext);
             Walk = new WalkRepository(_dbContext);
+            Image = new ImageRepository(_dbContext, _webHostEnvironment, _httpContextAccessor);
             Token = new TokenRepository(_configuration);
         }
         public async Task SaveAsync()

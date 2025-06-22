@@ -39,7 +39,7 @@ namespace EG.Walks.Controllers
                 return NotFound("No walks found.");
             }
             // Map the domain model to a list of DTOs
-            var walksDto = _mapper.Map<List<WalkDtoResponse>>(walksDomainModel);
+            var walksDto = _mapper.Map<List<WalkResponseDto>>(walksDomainModel);
             // Return the list of walks
             return Ok(walksDto);
         }
@@ -58,7 +58,7 @@ namespace EG.Walks.Controllers
                 return NotFound();
             }
             // Map the domain model to a DTO for the response
-            var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
+            var walkDto = _mapper.Map<WalkResponseDto>(walkDomainModel);
             // Return the walk
             return Ok(walkDto);
         }
@@ -76,7 +76,7 @@ namespace EG.Walks.Controllers
             // Save changes to the database
             await _unitOfWork.SaveAsync();
             // Map the created walk to a DTO for the response
-            var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
+            var walkDto = _mapper.Map<WalkResponseDto>(walkDomainModel);
             // Return the created walk
             return CreatedAtAction(nameof(GetById), new { id = walkDto.Id }, walkDto);
         }
@@ -100,7 +100,7 @@ namespace EG.Walks.Controllers
             // Save changes to the database
             await _unitOfWork.SaveAsync();
             // Map the updated walk to a DTO for the response
-            var walkDto = _mapper.Map<WalkDtoResponse>(walkDomainModel);
+            var walkDto = _mapper.Map<WalkResponseDto>(walkDomainModel);
             // Return the updated walk
             return Ok(walkDto);
         }
@@ -122,7 +122,7 @@ namespace EG.Walks.Controllers
             await _unitOfWork.SaveAsync();
 
             // Map the deleted walk to a DTO for the response
-            var walkDto = _mapper.Map<WalkDtoResponse>(deletedWalk);
+            var walkDto = _mapper.Map<WalkResponseDto>(deletedWalk);
 
             // Return the deleted walk with a 200 OK status
             return Ok(walkDto);

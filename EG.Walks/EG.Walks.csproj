@@ -25,4 +25,8 @@
     <ProjectReference Include="..\NZ.Walks.Infrastructure\EG.Walks.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Images\" />
+  </ItemGroup>
+
 </Project>
