@@ -35,7 +35,7 @@ namespace EG.Walks.Controllers
                     File = requestDto.File,
                     FileExtention = Path.GetExtension(requestDto.File.FileName),
                     FileSizeInBytes = requestDto.File.Length,
-                    FileName = requestDto.File.FileName,
+                    FileName = requestDto.FileName,
                     FileDescription = requestDto.FileDescription
                 };
 

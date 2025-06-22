@@ -20,8 +20,8 @@ namespace EG.Walks.Infrastructure.Repositories
         // This method is responsible for uploading an image to the server and saving its details in the database.
         public async Task<Image> ImageUploadAsync(Image image)
         {
-            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "images",
-                $"{image.FileName}{image.FilePath}");
+            var localFilePath = Path.Combine(_webHostEnvironment.ContentRootPath, "Images",
+                $"{image.FileName}{image.FileExtention}");
 
             // Upload the image file to local storage
             using var stream = new FileStream(localFilePath, FileMode.Create);
