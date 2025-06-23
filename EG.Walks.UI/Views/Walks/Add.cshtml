@@ -1,0 +1,47 @@
+﻿@model AddWalkViewModel
+
+@{
+    ViewData["Title"] = "Add Walk";
+}
+
+<h2 class="mb-4">Add New Walk</h2>
+
+<form asp-action="Add" method="post" class="card p-4 shadow">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LengthInKm" class="form-label"></label>
+        <input asp-for="LengthInKm" class="form-control" />
+        <span asp-validation-for="LengthInKm" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="WalkImageUrl" class="form-label"></label>
+        <input asp-for="WalkImageUrl" class="form-control" />
+        <span asp-validation-for="WalkImageUrl" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RegionId" class="form-label">Region</label>
+        <input asp-for="RegionId" class="form-control" />
+        <span asp-validation-for="RegionId" class="text-danger" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DifficultyId" class="form-label">Difficulty</label>
+        <input asp-for="DifficultyId" class="form-control" />
+        <span asp-validation-for="DifficultyId" class="text-danger" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Walk</button>
+</form>
