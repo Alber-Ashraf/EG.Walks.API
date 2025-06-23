@@ -10,6 +10,7 @@ namespace EG.Walks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Roles = "Admin")]
     public class ImagesController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

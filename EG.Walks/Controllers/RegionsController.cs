@@ -14,7 +14,7 @@ namespace EG.Walks.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class RegionsController : ControllerBase
     {
         // Database context for accessing regions
@@ -74,7 +74,7 @@ namespace EG.Walks.Controllers
         // https://localhost:xxxx/api/Regions
         [HttpPost]
         [ValidateModel]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([FromBody] CreateRegionRequestDto createRegionRequestDto) 
         {
             // Map the incoming DTO to a Region entity
@@ -96,7 +96,7 @@ namespace EG.Walks.Controllers
         [HttpPut]
         [Route("{id:guid}")]
         [ValidateModel]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
             // Map the incoming DTO to a Region entity
@@ -122,7 +122,7 @@ namespace EG.Walks.Controllers
         // https://localhost:xxxx/api/Regions/{id}
         [HttpDelete]
         [Route("{id:guid}")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             // Attempt to delete the region with the specified ID
