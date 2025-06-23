@@ -119,7 +119,24 @@ namespace EG.Walks.UI.Controllers
 
             return View();
         }
+        [HttpPost]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient();
 
+                var response = await client.DeleteAsync($"https://localhost:7013/api/walks/{id}");
 
+                response.EnsureSuccessStatusCode();
+
+                return RedirectToAction("GetAll", "Walks");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return View("Error");
+            }
+        }
     }
 }
