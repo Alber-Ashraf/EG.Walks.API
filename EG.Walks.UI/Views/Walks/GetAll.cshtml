@@ -1,0 +1,109 @@
+﻿@model WalkFilterViewModel
+
+@{
+    ViewData["Title"] = "Filtered Walks";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center">Walks Explorer</h2>
+
+    <!-- Filters Form -->
+    <form method="get" asp-action="GetAll" class="row g-3 mb-4">
+        <div class="col-md-3">
+            <input type="text" name="filterQuery" class="form-control" placeholder="Search..." value="@Model.FilterQuery" />
+        </div>
+        <div class="col-md-2">
+            <select name="filterOn" class="form-select">
+                <option value="Name" selected>Filter On: Name</option>
+                <option value="Region">Region</option>
+                <option value="Difficulty">Difficulty</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="sortBy" class="form-select">
+                <option value="Name" selected>Sort By: Name</option>
+                <option value="LengthInKm">Length</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="isAscending" class="form-select">
+                <option value="true" selected>Ascending</option>
+                <option value="false">Descending</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="pageSize" class="form-select">
+                <option value="2">2 per page</option>
+                <option value="4">4 per page</option>
+                <option value="6">6 per page</option>
+                <option value="8">8 per page</option>
+                <option value="10" selected>10 per page</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-primary w-100">Apply</button>
+        </div>
+    </form>
+
+    <!-- Walks Cards -->
+    @if (Model.Walks != null && Model.Walks.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var walk in Model.Walks)
+            {
+                <div class="col">
+                    <div class="card h-100 border-secondary shadow-sm">
+                        @if (!string.IsNullOrEmpty(walk.WalkImageUrl))
+                        {
+                            <img src="@walk.WalkImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;" />
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <span class="text-muted">No Image</span>
+                            </div>
+                        }
+
+                        <div class="card-body">
+                            <h5 class="card-title">@walk.Name</h5>
+                            <p class="card-text">@walk.Description</p>
+                        </div>
+
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Length:</strong> @walk.LengthInKm km</li>
+                            <li class="list-group-item"><strong>Difficulty:</strong> @walk.Difficulty?.Name</li>
+                            <li class="list-group-item"><strong>Region:</strong> @walk.Region?.Name</li>
+                        </ul>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center mt-4">
+            No walks found matching your criteria.
+        </div>
+    }
+
+    <!-- Pagination -->
+    <nav class="mt-4 d-flex justify-content-center">
+        <ul class="pagination">
+            @for (int i = 1; i <= Model.TotalPages; i++)
+            {
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="GetAll"
+                       asp-route-filterOn="@Model.FilterOn"
+                       asp-route-filterQuery="@Model.FilterQuery"
+                       asp-route-sortBy="@Model.SortBy"
+                       asp-route-isAscending="@Model.IsAscending"
+                       asp-route-page="@i"
+                       asp-route-pageSize="@Model.PageSize">
+                        @i
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
