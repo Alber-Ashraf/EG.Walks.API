@@ -1,6 +1,6 @@
 ﻿namespace EG.Walks.UI.Models.DTOs
 {
-    public class WalkResponseDto
+    public class WalkDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

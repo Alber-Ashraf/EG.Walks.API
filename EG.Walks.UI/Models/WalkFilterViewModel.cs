@@ -4,7 +4,7 @@ namespace EG.Walks.UI.Models
 {
     public class WalkFilterViewModel
     {
-        public List<WalkResponseDto> Walks { get; set; } = new List<WalkResponseDto>();
+        public List<WalkDto> Walks { get; set; } = new List<WalkDto>();
 
         // Filter/Sort/Paging Parameters
         public string? FilterOn { get; set; }

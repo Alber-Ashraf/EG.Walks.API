@@ -76,6 +76,8 @@
                             <li class="list-group-item"><strong>Difficulty:</strong> @walk.Difficulty?.Name</li>
                             <li class="list-group-item"><strong>Region:</strong> @walk.Region?.Name</li>
                         </ul>
+                        <a asp-controller="Walks" asp-action="Edit" asp-route-id="@walk.Id" class="btn btn-primary mb-3">Edit</a>
+
                     </div>
                 </div>
             }

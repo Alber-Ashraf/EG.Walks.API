@@ -1,0 +1,49 @@
+﻿@model EditWalkViewModel
+
+@{
+    ViewData["Title"] = "Edit Walk";
+}
+
+<h2>Edit Walk</h2>
+
+<form asp-action="Edit" method="post" class="card p-4 shadow-sm">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LengthInKm" class="form-label"></label>
+        <input asp-for="LengthInKm" class="form-control" type="number" step="0.01" />
+        <span asp-validation-for="LengthInKm" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="WalkImageUrl" class="form-label"></label>
+        <input asp-for="WalkImageUrl" class="form-control" type="url" />
+        <span asp-validation-for="WalkImageUrl" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="RegionId"></label>
+        <input asp-for="RegionId" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label asp-for="DifficultyId"></label>
+        <input asp-for="DifficultyId" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
